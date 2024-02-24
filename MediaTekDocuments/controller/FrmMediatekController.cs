@@ -88,6 +88,16 @@ namespace MediaTekDocuments.controller
         }
 
         /// <summary>
+        /// récupère les exemplaires d'un livre
+        /// </summary>
+        /// <param name="idLivre">id du livre concerné</param>
+        /// <returns>Liste d'objets Exemplaire</returns>
+        public List<CommandeDocument> GetCommandesLivres(string idLivre)
+        {
+            return access.GetCommandesLivres(idLivre);
+        }
+
+        /// <summary>
         /// Crée un exemplaire d'une revue dans la bdd
         /// </summary>
         /// <param name="exemplaire">L'objet Exemplaire concerné</param>
