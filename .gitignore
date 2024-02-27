@@ -1,0 +1,8 @@
+﻿################################################################################
+# Ce fichier .gitignore a été automatiquement créé par Microsoft(R) Visual Studio.
+################################################################################
+
+/MediaTekDocuments/obj/Debug
+/.vs/MediaTekDocuments/v16
+/MediaTekDocuments/bin/Debug
+/packages

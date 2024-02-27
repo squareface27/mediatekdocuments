@@ -1239,5 +1239,138 @@ namespace MediaTekDocuments.view
             }
         }
         #endregion
+
+        #region Onglet Commande Livre
+        private readonly BindingSource bdgCommandeLivreListe = new BindingSource();
+
+        /// <summary>
+        /// Tri sur les colonnes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvCommandeLivreListe_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            VideLivresZones();
+            string titreColonne = dgvCommandeLivreListe.Columns[e.ColumnIndex].HeaderText;
+            List<Livre> sortedList = new List<Livre>();
+            switch (titreColonne)
+            {
+                case "Id":
+                    sortedList = lesLivres.OrderBy(o => o.Id).ToList();
+                    break;
+                case "Titre":
+                    sortedList = lesLivres.OrderBy(o => o.Titre).ToList();
+                    break;
+                case "Collection":
+                    sortedList = lesLivres.OrderBy(o => o.Collection).ToList();
+                    break;
+                case "Auteur":
+                    sortedList = lesLivres.OrderBy(o => o.Auteur).ToList();
+                    break;
+                case "Genre":
+                    sortedList = lesLivres.OrderBy(o => o.Genre).ToList();
+                    break;
+                case "Public":
+                    sortedList = lesLivres.OrderBy(o => o.Public).ToList();
+                    break;
+                case "Rayon":
+                    sortedList = lesLivres.OrderBy(o => o.Rayon).ToList();
+                    break;
+            }
+            RemplirLivresListe(sortedList);
+        }
+
+        /// <summary>
+        /// Remplit le datagrid des livres avec la liste reçue en paramètre
+        /// </summary>
+        /// <param name="commande">liste des livres</param>
+        private void RemplirCommandeLivreListe(List<CommandeDocument> commande)
+        {
+            if (commande != null)
+            {
+                bdgCommandeLivreListe.DataSource = commande;
+                dgvCommandeLivreListe.DataSource = bdgCommandeLivreListe;
+                dgvCommandeLivreListe.Columns["id"].Visible = false;
+                dgvCommandeLivreListe.Columns["idLivreDvd"].Visible = false;
+                dgvCommandeLivreListe.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                dgvCommandeLivreListe.Columns["dateCommande"].DisplayIndex = 1;
+                dgvCommandeLivreListe.Columns["montant"].DisplayIndex = 2;
+                dgvCommandeLivreListe.Columns["NombreExemplaire"].DisplayIndex = 3;
+                dgvCommandeLivreListe.Columns["LeSuivi"].DisplayIndex = 4;
+            }
+            else
+            {
+                bdgCommandeLivreListe.DataSource = null;
+            }
+        }
+
+        /// <summary>
+        /// Affichage des informations du livre
+        /// </summary>
+        /// <param name="livre">la revue</param>
+        private void AfficheCommandeLivreInfos(Livre livre)
+        {
+            // informations sur le livre
+            textBoxTitreLivre.Text = livre.Titre;
+            textBoxAuteurLivre.Text = livre.Auteur;
+            textBoxCollectionLivre.Text = livre.Collection;
+            textBoxGenreLivre.Text = livre.Genre;
+            textBoxPubliclivre.Text = livre.Public;
+            textBoxRayonLivre.Text = livre.Rayon;
+            textBoxIsbnLivre.Text = livre.Isbn;
+            string image = livre.Image;
+            try
+            {
+                pcbReceptionRevueImage.Image = Image.FromFile(image);
+            }
+            catch
+            {
+                pcbReceptionRevueImage.Image = null;
+            }
+            RemplirCommandeLivreListe(controller.GetCommandesLivres(livre.Id));
+        }
+
+        /// <summary>
+        /// Recherche d'un numéro de livre
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonRechercheCommandeLivre_Click(object sender, EventArgs e)
+        {
+            if (!textBoxNumeroLivre.Text.Equals(""))
+            {
+                Livre livre = lesLivres.Find(x => x.Id.Equals(textBoxNumeroLivre.Text));
+                if (livre != null)
+                {
+                    AfficheCommandeLivreInfos(livre);                }
+                else
+                {
+                    MessageBox.Show("numéro introuvable");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Si le numéro de revue est modifié, la zone de l'exemplaire est vidée et inactive
+        /// les informations de la revue son aussi effacées
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void textBoxNumeroLivre_TextChanged(object sender, EventArgs e)
+        {
+            textBoxTitreLivre.Text = "";
+            textBoxAuteurLivre.Text = "";
+            textBoxCollectionLivre.Text = "";
+            textBoxGenreLivre.Text = "";
+            textBoxPubliclivre.Text = "";
+            textBoxRayonLivre.Text = "";
+            textBoxIsbnLivre.Text = "";
+            textBoxImagePathLivre.Text = null;
+            RemplirReceptionExemplairesListe(null);
+            AccesReceptionExemplaireGroupBox(false);
+        }
+
+        #endregion
+
     }
 }

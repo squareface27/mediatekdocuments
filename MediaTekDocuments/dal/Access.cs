@@ -17,7 +17,7 @@ namespace MediaTekDocuments.dal
         /// <summary>
         /// adresse de l'API
         /// </summary>
-        private static readonly string uriApi = "http://localhost/rest_mediatekdocuments/";
+        private static readonly string uriApi = "http://localhost/_restmediatekdocuments/";
         /// <summary>
         /// instance unique de la classe
         /// </summary>
@@ -143,6 +143,18 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
+        /// Retourne les exemplaires d'un livre
+        /// </summary>
+        /// <param name="idLivre">id du livre concerné</param>
+        /// <returns>Liste d'objets Exemplaire</returns>
+        public List<CommandeDocument> GetCommandesLivres(string idLivre)
+        {
+            String jsonIdDocument = convertToJson("id", idLivre);
+            List<CommandeDocument> lesCommandesLivres = TraitementRecup<CommandeDocument>(GET, "commandedocument/" + jsonIdDocument);
+            return lesCommandesLivres;
+        }
+
+        /// <summary>
         /// ecriture d'un exemplaire en base de données
         /// </summary>
         /// <param name="exemplaire">exemplaire à insérer</param>
@@ -172,6 +184,7 @@ namespace MediaTekDocuments.dal
         private List<T> TraitementRecup<T> (String methode, String message)
         {
             List<T> liste = new List<T>();
+            Console.WriteLine("TraitementRecup : " + methode + " " + message);
             try
             {
                 JObject retour = api.RecupDistant(methode, message);
