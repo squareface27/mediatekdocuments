@@ -106,5 +106,23 @@ namespace MediaTekDocuments.controller
         {
             return access.CreerExemplaire(exemplaire);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string GetCommandesLivresMaxId()
+        {
+            return access.GetMaxCommandeId();
+        }
+        
+        /// <summary>
+        /// Crée une commande de livre dans la bdd
+        /// </summary>
+        /// <param name="commandeLivre">L'objet Exemplaire concerné</param>
+        /// <returns>True si la création a pu se faire</returns>
+        public bool CreerCommandeLivre(CommandeDocument commandeLivre)
+        {
+            return access.CreerCommandeLivre(commandeLivre);
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using MediaTekDocuments.model;
 using MediaTekDocuments.controller;
+using MediaTekDocuments.view.CommandeLivres;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
@@ -21,6 +22,8 @@ namespace MediaTekDocuments.view
         private readonly BindingSource bdgPublics = new BindingSource();
         private readonly BindingSource bdgRayons = new BindingSource();
 
+        public string NumeroLivre { get; private set; }
+
         /// <summary>
         /// Constructeur : création du contrôleur lié à ce formulaire
         /// </summary>
@@ -28,8 +31,7 @@ namespace MediaTekDocuments.view
         {
             InitializeComponent();
             this.controller = new FrmMediatekController();
-            dtpDateAjoutCommande.Format = DateTimePickerFormat.Custom;
-            dtpDateAjoutCommande.CustomFormat = "yyyy MMM dd";
+            btnAjouterCommandeLivre.Enabled = false;
         }
 
         /// <summary>
@@ -991,7 +993,7 @@ namespace MediaTekDocuments.view
         }
         #endregion
 
-        #region Onglet Parutions
+        #region Onglet Paarutions
         private readonly BindingSource bdgExemplairesListe = new BindingSource();
         private List<Exemplaire> lesExemplaires = new List<Exemplaire>();
         const string ETATNEUF = "00001";
@@ -1246,6 +1248,32 @@ namespace MediaTekDocuments.view
         private readonly BindingSource bdgCommandeLivreListe = new BindingSource();
         private List<CommandeDocument> lesCommandesLivres = new List<CommandeDocument>();
 
+        /// <summary>
+        /// Tri sur les colonnes commande livre
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvCommandeLivreListe_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            string titreColonne = dgvCommandeLivreListe.Columns[e.ColumnIndex].HeaderText;
+            List<CommandeDocument> sortedList = lesCommandesLivres;
+            switch (titreColonne)
+            {
+                case "DateCommande":
+                    sortedList = lesCommandesLivres.OrderBy(o => o.DateCommande).ToList();
+                    break;
+                case "Montant":
+                    sortedList = lesCommandesLivres.OrderBy(o => o.Montant).ToList();
+                    break;
+                case "NombreExemplaire":
+                    sortedList = lesCommandesLivres.OrderBy(o => o.NombreExemplaire).ToList();
+                    break;
+                case "LeSuivi":
+                    sortedList = lesCommandesLivres.OrderBy(o => o.LeSuivi.Id).ToList();
+                    break;
+            }
+            RemplirCommandeLivreListe(sortedList);
+        }
 
         /// <summary>
         /// Remplit le datagrid des livres avec la liste reçue en paramètre
@@ -1257,13 +1285,14 @@ namespace MediaTekDocuments.view
             {
                 bdgCommandeLivreListe.DataSource = commande;
                 dgvCommandeLivreListe.DataSource = bdgCommandeLivreListe;
-                dgvCommandeLivreListe.Columns["Id"].Visible = false;
-                dgvCommandeLivreListe.Columns["IdLivreDvd"].Visible = false;
+                dgvCommandeLivreListe.Columns["id"].Visible = false;
+                dgvCommandeLivreListe.Columns["idLivreDvd"].Visible = false;
                 dgvCommandeLivreListe.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-                dgvCommandeLivreListe.Columns["DateCommande"].DisplayIndex = 1;
-                dgvCommandeLivreListe.Columns["Montant"].DisplayIndex = 2;
+                dgvCommandeLivreListe.Columns["dateCommande"].DisplayIndex = 1;
+                dgvCommandeLivreListe.Columns["montant"].DisplayIndex = 2;
                 dgvCommandeLivreListe.Columns["NombreExemplaire"].DisplayIndex = 3;
                 dgvCommandeLivreListe.Columns["LeSuivi"].DisplayIndex = 4;
+
             }
             else
             {
@@ -1298,6 +1327,7 @@ namespace MediaTekDocuments.view
             RemplirCommandeLivreListe(lesCommandesLivres);
         }
 
+
         /// <summary>
         /// Recherche d'un numéro de livre
         /// </summary>
@@ -1310,10 +1340,14 @@ namespace MediaTekDocuments.view
                 Livre livre = lesLivres.Find(x => x.Id.Equals(textBoxNumeroLivre.Text));
                 if (livre != null)
                 {
-                    AfficheCommandeLivreInfos(livre);                }
+                    AfficheCommandeLivreInfos(livre);
+                    btnAjouterCommandeLivre.Enabled = true;
+                    NumeroLivre = textBoxNumeroLivre.Text;
+                }
                 else
                 {
                     MessageBox.Show("numéro introuvable");
+                    btnAjouterCommandeLivre.Enabled = false;
                 }
             }
         }
@@ -1336,34 +1370,15 @@ namespace MediaTekDocuments.view
             textBoxImagePathLivre.Text = null;
             RemplirReceptionExemplairesListe(null);
             AccesReceptionExemplaireGroupBox(false);
-        } 
-
-        /// <summary>
-        /// Tri sur les colonnes commande livre
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void dgvCommandeLivreListe_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            string titreColonne = dgvCommandeLivreListe.Columns[e.ColumnIndex].HeaderText;
-            List<CommandeDocument> sortedList = lesCommandesLivres;
-            switch (titreColonne)
-            {
-                case "DateCommande":
-                    sortedList = lesCommandesLivres.OrderBy(o => o.DateCommande).ToList();
-                    break;
-                case "Montant":
-                    sortedList = lesCommandesLivres.OrderBy(o => o.Montant).ToList();
-                    break;
-                case "NombreExemplaire":
-                    sortedList = lesCommandesLivres.OrderBy(o => o.NombreExemplaire).ToList();
-                    break;
-                case "LeSuivi":
-                    sortedList = lesCommandesLivres.OrderBy(o => o.LeSuivi.Id).ToList();
-                    break;
-            }
-            RemplirCommandeLivreListe(sortedList);
         }
+
+        private void btnAjouterCommandeLivre_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            var formAjouterCommandeLivre = new AjouterCommandeLivreForm(this);
+            formAjouterCommandeLivre.Show();
+        }
+
         #endregion
 
     }

@@ -154,6 +154,13 @@ namespace MediaTekDocuments.dal
             return lesCommandesLivres;
         }
 
+        public string GetMaxCommandeId()
+        {
+            JObject retour = api.RecupDistant(GET, "maxcommande");
+            var resultat = (string)retour["result"][0]["MAX(id)"];
+            return resultat;
+        }
+
         /// <summary>
         /// ecriture d'un exemplaire en base de données
         /// </summary>
@@ -172,6 +179,27 @@ namespace MediaTekDocuments.dal
                 Console.WriteLine(ex.Message);
             }
             return false; 
+        }
+
+        /// <summary>
+        /// ecriture d'une commande de livre en base de données
+        /// </summary>
+        /// <param name="commandeLivre">commande livre à insérer</param>
+        /// <returns>true si l'insertion a pu se faire (retour != null)</returns>
+        public bool CreerCommandeLivre(CommandeDocument commandeLivre)
+        {
+            String jsonCommandeLivre = JsonConvert.SerializeObject(commandeLivre, new CustomDateTimeConverter());
+            try
+            {
+                // récupération soit d'une liste vide (requête ok) soit de null (erreur)
+                List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(POST, "commandedocument/" + jsonCommandeLivre);
+                return (liste != null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
         }
 
         /// <summary>
