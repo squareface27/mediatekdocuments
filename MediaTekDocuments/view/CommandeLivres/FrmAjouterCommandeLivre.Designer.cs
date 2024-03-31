@@ -97,7 +97,7 @@ namespace MediaTekDocuments.view.CommandeLivres
             this.dateTimePickerDateCommande.Name = "dateTimePickerDateCommande";
             this.dateTimePickerDateCommande.Size = new System.Drawing.Size(200, 20);
             this.dateTimePickerDateCommande.TabIndex = 6;
-            this.dateTimePickerDateCommande.Value = new System.DateTime(2024, 3, 1, 0, 0, 0, 0);
+            this.dateTimePickerDateCommande.Value = new System.DateTime(2024, 3, 15, 0, 0, 0, 0);
             // 
             // AjouterCommandeLivreForm
             // 

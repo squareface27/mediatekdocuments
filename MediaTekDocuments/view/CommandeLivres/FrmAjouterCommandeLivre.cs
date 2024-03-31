@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Globalization;
 using MediaTekDocuments.controller;
 using MediaTekDocuments.model;
+using System.Threading.Tasks;
 
 namespace MediaTekDocuments.view.CommandeLivres
 {
@@ -104,8 +105,10 @@ namespace MediaTekDocuments.view.CommandeLivres
             CommandeDocument commandeLivre = new CommandeDocument(maxId, nbExemplaire, idSuivi, libelle, numeroLivre, dateCommande, montant);
             controller.CreerCommandeLivre(commandeLivre);
 
+            FrmMediatek.refresh_command();
             this.Close();
             FrmMediatek.Show();
+
         }
 
 

@@ -36,7 +36,10 @@ namespace MediaTekDocuments.dal
         private const string POST = "POST";
         /// <summary>
         /// méthode HTTP pour update
-
+        private const string PUT = "PUT";
+        /// <summary>
+        /// méthode HTTP pour delete
+        private const string DELETE = "DELETE";
         /// <summary>
         /// Méthode privée pour créer un singleton
         /// initialise l'accès à l'API
@@ -129,6 +132,16 @@ namespace MediaTekDocuments.dal
             return lesRevues;
         }
 
+        /// <summary>
+        /// Retourne toutes les revues à partir de la BDD
+        /// </summary>
+        /// <returns>Liste d'objets Revue</returns>
+        public List<Suivi> GetAllSuivi()
+        {
+            List<Suivi> suivis = TraitementRecup<Suivi>(GET, "suivi");
+            return suivis;
+        }
+
 
         /// <summary>
         /// Retourne les exemplaires d'une revue
@@ -157,7 +170,7 @@ namespace MediaTekDocuments.dal
         public string GetMaxCommandeId()
         {
             JObject retour = api.RecupDistant(GET, "maxcommande");
-            var resultat = (string)retour["result"][0]["MAX(id)"];
+            var resultat = (string)retour["result"][0]["MAX(CAST(id AS UNSIGNED))"];
             return resultat;
         }
 
@@ -193,6 +206,48 @@ namespace MediaTekDocuments.dal
             {
                 // récupération soit d'une liste vide (requête ok) soit de null (erreur)
                 List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(POST, "commandedocument/" + jsonCommandeLivre);
+                return (liste != null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// suppression d'une commande de livre en base de données
+        /// </summary>
+        /// <param name="commandeLivre">commande livre à insérer</param>
+        /// <returns>true si l'insertion a pu se faire (retour != null)</returns>
+        public bool SupprimerCommandeLivre(CommandeDocument commandeLivre)
+        {
+            String jsonCommandeLivre = JsonConvert.SerializeObject(commandeLivre, new CustomDateTimeConverter());
+            try
+            {
+                // récupération soit d'une liste vide (requête ok) soit de null (erreur)
+                List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(DELETE, "commandedocument/" + jsonCommandeLivre);
+                return (liste != null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// modification d'une commande de livre en base de données
+        /// </summary>
+        /// <param name="commandeLivre">commande livre à modifier</param>
+        /// <returns>true si la modification a pu se faire (retour != null)</returns>
+        public bool UpdateCommandeLivre(CommandeDocument commandeLivre)
+        {
+            String jsonCommandeLivre = JsonConvert.SerializeObject(commandeLivre, new CustomDateTimeConverter());
+            try
+            {
+                // récupération soit d'une liste vide (requête ok) soit de null (erreur)
+                List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(PUT, "commandedocument/" + jsonCommandeLivre);
                 return (liste != null);
             }
             catch (Exception ex)

@@ -183,16 +183,14 @@ namespace MediaTekDocuments.view
             this.textBoxIsbnLivre = new System.Windows.Forms.TextBox();
             this.labelIsbn = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lblSuivi = new System.Windows.Forms.Label();
+            this.label60 = new System.Windows.Forms.Label();
+            this.btnAppliquerModification = new System.Windows.Forms.Button();
+            this.suiviList = new System.Windows.Forms.ComboBox();
+            this.btnModifierCommandeLivre = new System.Windows.Forms.Button();
+            this.btnAjouterCommandeLivre = new System.Windows.Forms.Button();
             this.label71 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.button3 = new System.Windows.Forms.Button();
-            this.textBox9 = new System.Windows.Forms.TextBox();
-            this.label72 = new System.Windows.Forms.Label();
-            this.textBox10 = new System.Windows.Forms.TextBox();
-            this.label73 = new System.Windows.Forms.Label();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.label74 = new System.Windows.Forms.Label();
             this.labelImage = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label62 = new System.Windows.Forms.Label();
@@ -214,7 +212,8 @@ namespace MediaTekDocuments.view
             this.label69 = new System.Windows.Forms.Label();
             this.label70 = new System.Windows.Forms.Label();
             this.buttonRechercheCommandeLivre = new System.Windows.Forms.Button();
-            this.btnAjouterCommandeLivre = new System.Windows.Forms.Button();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.btnSupprimerCommandeLivre = new System.Windows.Forms.Button();
             this.tabOngletsApplication.SuspendLayout();
             this.tabLivres.SuspendLayout();
             this.grpLivresInfos.SuspendLayout();
@@ -1884,23 +1883,75 @@ namespace MediaTekDocuments.view
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.btnSupprimerCommandeLivre);
+            this.groupBox2.Controls.Add(this.lblSuivi);
+            this.groupBox2.Controls.Add(this.label60);
+            this.groupBox2.Controls.Add(this.btnAppliquerModification);
+            this.groupBox2.Controls.Add(this.suiviList);
+            this.groupBox2.Controls.Add(this.btnModifierCommandeLivre);
             this.groupBox2.Controls.Add(this.btnAjouterCommandeLivre);
             this.groupBox2.Controls.Add(this.label71);
-            this.groupBox2.Controls.Add(this.button2);
             this.groupBox2.Controls.Add(this.pictureBox3);
-            this.groupBox2.Controls.Add(this.button3);
-            this.groupBox2.Controls.Add(this.textBox9);
-            this.groupBox2.Controls.Add(this.label72);
-            this.groupBox2.Controls.Add(this.textBox10);
-            this.groupBox2.Controls.Add(this.label73);
-            this.groupBox2.Controls.Add(this.dateTimePicker1);
-            this.groupBox2.Controls.Add(this.label74);
             this.groupBox2.Location = new System.Drawing.Point(8, 380);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(859, 244);
             this.groupBox2.TabIndex = 57;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Nouvelle parution réceptionnée pour cette revue";
+            // 
+            // lblSuivi
+            // 
+            this.lblSuivi.AutoSize = true;
+            this.lblSuivi.Location = new System.Drawing.Point(86, 26);
+            this.lblSuivi.Name = "lblSuivi";
+            this.lblSuivi.Size = new System.Drawing.Size(0, 13);
+            this.lblSuivi.TabIndex = 63;
+            // 
+            // label60
+            // 
+            this.label60.AutoSize = true;
+            this.label60.Location = new System.Drawing.Point(6, 26);
+            this.label60.Name = "label60";
+            this.label60.Size = new System.Drawing.Size(74, 13);
+            this.label60.TabIndex = 62;
+            this.label60.Text = "État du suivi : ";
+            // 
+            // btnAppliquerModification
+            // 
+            this.btnAppliquerModification.Location = new System.Drawing.Point(364, 26);
+            this.btnAppliquerModification.Name = "btnAppliquerModification";
+            this.btnAppliquerModification.Size = new System.Drawing.Size(75, 23);
+            this.btnAppliquerModification.TabIndex = 61;
+            this.btnAppliquerModification.Text = "Appliquer";
+            this.btnAppliquerModification.UseVisualStyleBackColor = true;
+            this.btnAppliquerModification.Click += new System.EventHandler(this.btnAppliquerModification_Click);
+            // 
+            // suiviList
+            // 
+            this.suiviList.FormattingEnabled = true;
+            this.suiviList.Location = new System.Drawing.Point(211, 28);
+            this.suiviList.Name = "suiviList";
+            this.suiviList.Size = new System.Drawing.Size(121, 21);
+            this.suiviList.TabIndex = 60;
+            // 
+            // btnModifierCommandeLivre
+            // 
+            this.btnModifierCommandeLivre.Location = new System.Drawing.Point(155, 193);
+            this.btnModifierCommandeLivre.Name = "btnModifierCommandeLivre";
+            this.btnModifierCommandeLivre.Size = new System.Drawing.Size(75, 23);
+            this.btnModifierCommandeLivre.TabIndex = 59;
+            this.btnModifierCommandeLivre.Text = "Modifier";
+            this.btnModifierCommandeLivre.UseVisualStyleBackColor = true;
+            this.btnModifierCommandeLivre.Click += new System.EventHandler(this.btnModifierCommandeLivre_Click);
+            // 
+            // btnAjouterCommandeLivre
+            // 
+            this.btnAjouterCommandeLivre.Location = new System.Drawing.Point(287, 193);
+            this.btnAjouterCommandeLivre.Name = "btnAjouterCommandeLivre";
+            this.btnAjouterCommandeLivre.Size = new System.Drawing.Size(93, 23);
+            this.btnAjouterCommandeLivre.TabIndex = 58;
+            this.btnAjouterCommandeLivre.Text = "Ajouter";
+            this.btnAjouterCommandeLivre.UseVisualStyleBackColor = true;
+            this.btnAjouterCommandeLivre.Click += new System.EventHandler(this.btnAjouterCommandeLivre_Click);
             // 
             // label71
             // 
@@ -1912,16 +1963,6 @@ namespace MediaTekDocuments.view
             this.label71.TabIndex = 57;
             this.label71.Text = "Image exemplaire :";
             // 
-            // button2
-            // 
-            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(446, 69);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(96, 22);
-            this.button2.TabIndex = 43;
-            this.button2.Text = "Rechercher";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
             // pictureBox3
             // 
             this.pictureBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1931,69 +1972,6 @@ namespace MediaTekDocuments.view
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox3.TabIndex = 42;
             this.pictureBox3.TabStop = false;
-            // 
-            // button3
-            // 
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(6, 95);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(535, 22);
-            this.button3.TabIndex = 17;
-            this.button3.Text = "Valider la réception";
-            this.button3.UseVisualStyleBackColor = true;
-            // 
-            // textBox9
-            // 
-            this.textBox9.Location = new System.Drawing.Point(150, 70);
-            this.textBox9.Name = "textBox9";
-            this.textBox9.ReadOnly = true;
-            this.textBox9.Size = new System.Drawing.Size(290, 20);
-            this.textBox9.TabIndex = 5;
-            // 
-            // label72
-            // 
-            this.label72.AutoSize = true;
-            this.label72.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label72.Location = new System.Drawing.Point(6, 70);
-            this.label72.Name = "label72";
-            this.label72.Size = new System.Drawing.Size(127, 13);
-            this.label72.TabIndex = 4;
-            this.label72.Text = "Emplacement image :";
-            // 
-            // textBox10
-            // 
-            this.textBox10.Location = new System.Drawing.Point(150, 20);
-            this.textBox10.Name = "textBox10";
-            this.textBox10.Size = new System.Drawing.Size(100, 20);
-            this.textBox10.TabIndex = 3;
-            // 
-            // label73
-            // 
-            this.label73.AutoSize = true;
-            this.label73.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label73.Location = new System.Drawing.Point(6, 45);
-            this.label73.Name = "label73";
-            this.label73.Size = new System.Drawing.Size(110, 13);
-            this.label73.TabIndex = 2;
-            this.label73.Text = "Date de parution :";
-            // 
-            // dateTimePicker1
-            // 
-            this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePicker1.Location = new System.Drawing.Point(150, 45);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(100, 20);
-            this.dateTimePicker1.TabIndex = 1;
-            // 
-            // label74
-            // 
-            this.label74.AutoSize = true;
-            this.label74.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label74.Location = new System.Drawing.Point(6, 20);
-            this.label74.Name = "label74";
-            this.label74.Size = new System.Drawing.Size(129, 13);
-            this.label74.TabIndex = 0;
-            this.label74.Text = "Numéro réceptionné :";
             // 
             // labelImage
             // 
@@ -2040,6 +2018,7 @@ namespace MediaTekDocuments.view
             this.dgvCommandeLivreListe.Size = new System.Drawing.Size(524, 134);
             this.dgvCommandeLivreListe.TabIndex = 52;
             this.dgvCommandeLivreListe.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvCommandeLivreListe_ColumnHeaderMouseClick);
+            this.dgvCommandeLivreListe.SelectionChanged += new System.EventHandler(this.dgvCommandeLivreListe_SelectionChanged);
             // 
             // textBoxImagePathLivre
             // 
@@ -2196,15 +2175,15 @@ namespace MediaTekDocuments.view
             this.buttonRechercheCommandeLivre.UseVisualStyleBackColor = true;
             this.buttonRechercheCommandeLivre.Click += new System.EventHandler(this.buttonRechercheCommandeLivre_Click);
             // 
-            // btnAjouterCommandeLivre
+            // btnSupprimerCommandeLivre
             // 
-            this.btnAjouterCommandeLivre.Location = new System.Drawing.Point(287, 193);
-            this.btnAjouterCommandeLivre.Name = "btnAjouterCommandeLivre";
-            this.btnAjouterCommandeLivre.Size = new System.Drawing.Size(93, 23);
-            this.btnAjouterCommandeLivre.TabIndex = 58;
-            this.btnAjouterCommandeLivre.Text = "Ajouter";
-            this.btnAjouterCommandeLivre.UseVisualStyleBackColor = true;
-            this.btnAjouterCommandeLivre.Click += new System.EventHandler(this.btnAjouterCommandeLivre_Click);
+            this.btnSupprimerCommandeLivre.Location = new System.Drawing.Point(413, 192);
+            this.btnSupprimerCommandeLivre.Name = "btnSupprimerCommandeLivre";
+            this.btnSupprimerCommandeLivre.Size = new System.Drawing.Size(75, 23);
+            this.btnSupprimerCommandeLivre.TabIndex = 64;
+            this.btnSupprimerCommandeLivre.Text = "Supprimer";
+            this.btnSupprimerCommandeLivre.UseVisualStyleBackColor = true;
+            this.btnSupprimerCommandeLivre.Click += new System.EventHandler(this.btnSupprimerCommandeLivre_Click);
             // 
             // FrmMediatek
             // 
@@ -2433,17 +2412,16 @@ namespace MediaTekDocuments.view
         private System.Windows.Forms.Button buttonRechercheCommandeLivre;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label71;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.PictureBox pictureBox3;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.TextBox textBox9;
-        private System.Windows.Forms.Label label72;
-        private System.Windows.Forms.TextBox textBox10;
-        private System.Windows.Forms.Label label73;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
-        private System.Windows.Forms.Label label74;
         private System.Windows.Forms.TextBox textBoxIsbnLivre;
         private System.Windows.Forms.Label labelIsbn;
         private System.Windows.Forms.Button btnAjouterCommandeLivre;
+        private System.Windows.Forms.Button btnModifierCommandeLivre;
+        private System.Windows.Forms.Label lblSuivi;
+        private System.Windows.Forms.Label label60;
+        private System.Windows.Forms.Button btnAppliquerModification;
+        private System.Windows.Forms.ComboBox suiviList;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.Button btnSupprimerCommandeLivre;
     }
 }
