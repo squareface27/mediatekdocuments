@@ -18,6 +18,7 @@ namespace MediaTekDocuments.model
             this.NombreExemplaire = nombreExemplaire;
             this.LeSuivi = new Suivi(idSuivi, libelleSuivi);
             this.IdLivreDvd = idLivreDvd;
+
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using MediaTekDocuments.model;
 using MediaTekDocuments.controller;
+using MediaTekDocuments.view.CommandeLivres;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
@@ -21,6 +22,9 @@ namespace MediaTekDocuments.view
         private readonly BindingSource bdgPublics = new BindingSource();
         private readonly BindingSource bdgRayons = new BindingSource();
 
+        public string NumeroLivre { get; private set; }
+        public string NouveauSuivi { get; private set; }
+
         /// <summary>
         /// Constructeur : création du contrôleur lié à ce formulaire
         /// </summary>
@@ -28,6 +32,11 @@ namespace MediaTekDocuments.view
         {
             InitializeComponent();
             this.controller = new FrmMediatekController();
+            btnAjouterCommandeLivre.Enabled = false;
+            btnAppliquerModification.Enabled = false;
+            btnSupprimerCommandeLivre.Enabled = false;
+            suiviList.Enabled = false;
+            btnModifierCommandeLivre.Enabled = false;
         }
 
         /// <summary>
@@ -1242,42 +1251,43 @@ namespace MediaTekDocuments.view
 
         #region Onglet Commande Livre
         private readonly BindingSource bdgCommandeLivreListe = new BindingSource();
+        private List<CommandeDocument> lesCommandesLivres = new List<CommandeDocument>();
+        CommandeDocument commande = null;
 
         /// <summary>
-        /// Tri sur les colonnes
+        /// Tri sur les colonnes commande livre
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void dgvCommandeLivreListe_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            VideLivresZones();
             string titreColonne = dgvCommandeLivreListe.Columns[e.ColumnIndex].HeaderText;
-            List<Livre> sortedList = new List<Livre>();
+            List<CommandeDocument> sortedList = lesCommandesLivres;
             switch (titreColonne)
             {
-                case "Id":
-                    sortedList = lesLivres.OrderBy(o => o.Id).ToList();
+                case "DateCommande":
+                    sortedList = lesCommandesLivres.OrderBy(o => o.DateCommande).ToList();
                     break;
-                case "Titre":
-                    sortedList = lesLivres.OrderBy(o => o.Titre).ToList();
+                case "Montant":
+                    sortedList = lesCommandesLivres.OrderBy(o => o.Montant).ToList();
                     break;
-                case "Collection":
-                    sortedList = lesLivres.OrderBy(o => o.Collection).ToList();
+                case "NombreExemplaire":
+                    sortedList = lesCommandesLivres.OrderBy(o => o.NombreExemplaire).ToList();
                     break;
-                case "Auteur":
-                    sortedList = lesLivres.OrderBy(o => o.Auteur).ToList();
-                    break;
-                case "Genre":
-                    sortedList = lesLivres.OrderBy(o => o.Genre).ToList();
-                    break;
-                case "Public":
-                    sortedList = lesLivres.OrderBy(o => o.Public).ToList();
-                    break;
-                case "Rayon":
-                    sortedList = lesLivres.OrderBy(o => o.Rayon).ToList();
+                case "LeSuivi":
+                    sortedList = lesCommandesLivres.OrderBy(o => o.LeSuivi.Id).ToList();
                     break;
             }
-            RemplirLivresListe(sortedList);
+            RemplirCommandeLivreListe(sortedList);
+        }
+
+        /// <summary>
+        /// Actualise la liste complète des commandes de livres
+        /// </summary>
+        public void ActualiserCommandeLivre(Livre livre)
+        {
+            lesCommandesLivres = controller.GetCommandesLivres(livre.Id);
+            RemplirCommandeLivreListe(lesCommandesLivres);
         }
 
         /// <summary>
@@ -1297,11 +1307,13 @@ namespace MediaTekDocuments.view
                 dgvCommandeLivreListe.Columns["montant"].DisplayIndex = 2;
                 dgvCommandeLivreListe.Columns["NombreExemplaire"].DisplayIndex = 3;
                 dgvCommandeLivreListe.Columns["LeSuivi"].DisplayIndex = 4;
+
             }
             else
             {
                 bdgCommandeLivreListe.DataSource = null;
             }
+
         }
 
         /// <summary>
@@ -1327,8 +1339,10 @@ namespace MediaTekDocuments.view
             {
                 pcbReceptionRevueImage.Image = null;
             }
-            RemplirCommandeLivreListe(controller.GetCommandesLivres(livre.Id));
+            lesCommandesLivres = controller.GetCommandesLivres(livre.Id);
+            RemplirCommandeLivreListe(lesCommandesLivres);
         }
+
 
         /// <summary>
         /// Recherche d'un numéro de livre
@@ -1342,10 +1356,14 @@ namespace MediaTekDocuments.view
                 Livre livre = lesLivres.Find(x => x.Id.Equals(textBoxNumeroLivre.Text));
                 if (livre != null)
                 {
-                    AfficheCommandeLivreInfos(livre);                }
+                    AfficheCommandeLivreInfos(livre);
+                    btnAjouterCommandeLivre.Enabled = true;
+                    NumeroLivre = textBoxNumeroLivre.Text;
+                }
                 else
                 {
                     MessageBox.Show("numéro introuvable");
+                    btnAjouterCommandeLivre.Enabled = false;
                 }
             }
         }
@@ -1370,7 +1388,126 @@ namespace MediaTekDocuments.view
             AccesReceptionExemplaireGroupBox(false);
         }
 
+        private void btnAjouterCommandeLivre_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            var formAjouterCommandeLivre = new AjouterCommandeLivreForm(this);
+            formAjouterCommandeLivre.Show();
+        }
+
         #endregion
 
+        public void refresh_command()
+        {
+            Livre livre = lesLivres.Find(x => x.Id.Equals(textBoxNumeroLivre.Text));
+            ActualiserCommandeLivre(livre);
+        }
+
+        private void dgvCommandeLivreListe_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvCommandeLivreListe.CurrentCell != null)
+            {
+                try
+                {
+                    btnModifierCommandeLivre.Enabled = true;
+                    btnSupprimerCommandeLivre.Enabled = true;
+                }
+                catch
+                {
+                    btnModifierCommandeLivre.Enabled = false;
+                    btnSupprimerCommandeLivre.Enabled = false;
+                }
+            }
+            else
+            {
+                btnModifierCommandeLivre.Enabled = false;
+                btnSupprimerCommandeLivre.Enabled = false;
+            }
+        }
+
+        /// <summary>
+        /// Rempli le combobox du nom des suivis
+        /// </summary>
+        /// <param name="libelleSuivi">liste des libelles
+        /// <param name="bdg">bindingsource contenant les informations</param>
+        /// <param name="cbx">combobox à remplir</param>
+        public void RemplirComboLibelleSuivi(List<Suivi> libelleSuivi, ComboBox cbx)
+        {
+            commande = (CommandeDocument)bdgCommandeLivreListe[bdgCommandeLivreListe.Position];
+
+            List<Suivi> libelleSuiviFiltrée = new List<Suivi>(libelleSuivi);
+
+            if (commande.LeSuivi.Libelle == "Livrée" || commande.LeSuivi.Libelle == "Réglée")
+            {
+                libelleSuiviFiltrée = libelleSuiviFiltrée.Where(s => s.Libelle != "En cours" && s.Libelle != "Relancée").ToList();
+            }
+            else if (commande.LeSuivi.Libelle != "Livrée")
+            {
+                libelleSuiviFiltrée = libelleSuiviFiltrée.Where(s => s.Libelle != "Réglée").ToList();
+            }
+
+            cbx.DataSource = libelleSuiviFiltrée;
+
+            if (cbx.Items.Count > 0 && libelleSuiviFiltrée.Any(s => s.Libelle == commande.LeSuivi.Libelle))
+            {
+                cbx.SelectedItem = libelleSuiviFiltrée.FirstOrDefault(s => s.Libelle == commande.LeSuivi.Libelle);
+            }
+
+
+        }
+
+        private void btnModifierCommandeLivre_Click(object sender, EventArgs e)
+        {
+            commande = (CommandeDocument)bdgCommandeLivreListe[bdgCommandeLivreListe.Position];
+            lblSuivi.Text = commande.LeSuivi.Libelle;
+            suiviList.Enabled = true;
+            RemplirComboLibelleSuivi(controller.GetSuivis(), suiviList);
+            btnAppliquerModification.Enabled = true;
+
+        }
+
+        private void btnAppliquerModification_Click(object sender, EventArgs e)
+        {
+            commande = (CommandeDocument)bdgCommandeLivreListe[bdgCommandeLivreListe.Position];
+            Suivi suiviSelectionne = suiviList.SelectedItem as Suivi;
+            string LibelleSuivi = suiviSelectionne.Libelle;
+            string CodeSuivi = "";
+
+            Dictionary<string, string> suiviCodes = new Dictionary<string, string>
+            {
+                {"En cours", "00001"},
+                {"Livrée", "00002"},
+                {"Réglée", "00003"},
+                {"Relancée", "00004"}
+            };
+
+            if (suiviCodes.TryGetValue(LibelleSuivi, out var code))
+            {
+                CodeSuivi = code;
+            }
+
+            CommandeDocument commandeLivre = new CommandeDocument(commande.Id, commande.NombreExemplaire, CodeSuivi, LibelleSuivi, commande.IdLivreDvd, commande.DateCommande, commande.Montant);
+            controller.UpdateCommandeLivre(commandeLivre);
+
+            refresh_command();
+        }
+
+        private void btnSupprimerCommandeLivre_Click(object sender, EventArgs e)
+        {
+            commande = (CommandeDocument)bdgCommandeLivreListe[bdgCommandeLivreListe.Position];
+
+            if(commande.LeSuivi.Libelle == "Livrée")
+            {
+                MessageBox.Show("Erreur, il est impossible de supprimer une commande livrée");
+            }
+            else
+            {
+                CommandeDocument commandeLivre = new CommandeDocument(commande.Id, commande.NombreExemplaire, commande.LeSuivi.Id, commande.LeSuivi.Libelle, commande.IdLivreDvd, commande.DateCommande, commande.Montant);
+                controller.SupprimerCommandeLivre(commandeLivre);
+
+                refresh_command();
+            }
+            
+        }
     }
 }

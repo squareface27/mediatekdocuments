@@ -76,6 +76,16 @@ namespace MediaTekDocuments.controller
             return access.GetAllPublics();
         }
 
+        /// <summary>
+        /// récupère les suivis
+        /// </summary>
+        /// <param name="suivis">L'objet suivis concerné</param>
+        /// <returns>True si la création a pu se faire</returns>
+        public List<Suivi> GetSuivis()
+        {
+            return access.GetAllSuivi();
+        }
+
 
         /// <summary>
         /// récupère les exemplaires d'une revue
@@ -106,5 +116,44 @@ namespace MediaTekDocuments.controller
         {
             return access.CreerExemplaire(exemplaire);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string GetCommandesLivresMaxId()
+        {
+            return access.GetMaxCommandeId();
+        }
+
+        /// <summary>
+        /// Crée une commande de livre dans la bdd
+        /// </summary>
+        /// <param name="commandeLivre">L'objet Exemplaire concerné</param>
+        /// <returns>True si la création a pu se faire</returns>
+        public bool CreerCommandeLivre(CommandeDocument commandeLivre)
+        {
+            return access.CreerCommandeLivre(commandeLivre);
+        }
+
+        /// <summary>
+        /// Modifier une commande de livre dans la bdd
+        /// </summary>
+        /// <param name="commandeLivre">L'objet Exemplaire concerné</param>
+        /// <returns>True si la modification a pu se faire</returns>
+        public bool UpdateCommandeLivre(CommandeDocument commandeLivre)
+        {
+            return access.UpdateCommandeLivre(commandeLivre);
+        }
+
+        /// <summary>
+        /// Modifier une commande de livre dans la bdd
+        /// </summary>
+        /// <param name="commandeLivre">L'objet Exemplaire concerné</param>
+        /// <returns>True si la modification a pu se faire</returns>
+        public bool SupprimerCommandeLivre(CommandeDocument commandeLivre)
+        {
+            return access.SupprimerCommandeLivre(commandeLivre);
+        }
+
     }
 }
