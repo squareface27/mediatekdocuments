@@ -7,16 +7,15 @@ using MediaTekDocuments.controller;
 using MediaTekDocuments.model;
 using System.Threading.Tasks;
 
-namespace MediaTekDocuments.view.CommandeLivres
+namespace MediaTekDocuments.view.CommandeDvd
 {
-    public partial class AjouterCommandeLivreForm : Form
+    public partial class FrmAjouterCommandeDvd : Form
     {
-
         private FrmMediatek FrmMediatek;
         private readonly FrmMediatekController controller;
         private Dictionary<TextBox, string> textBoxPlaceholders = new Dictionary<TextBox, string>();
-
-        public AjouterCommandeLivreForm(FrmMediatek frmMediatek)
+        
+        public FrmAjouterCommandeDvd(FrmMediatek frmMediatek)
         {
             InitializeComponent();
             this.controller = new FrmMediatekController();
@@ -72,10 +71,10 @@ namespace MediaTekDocuments.view.CommandeLivres
             var maxId = controller.GetCommandesLivresMaxId();
             maxId = (int.Parse(maxId) + 1).ToString();
 
-            string numeroLivre = FrmMediatek.NumeroLivre;
-            if (string.IsNullOrWhiteSpace(numeroLivre))
+            string numeroDvd = FrmMediatek.NumeroDvd;
+            if (string.IsNullOrWhiteSpace(numeroDvd))
             {
-                MessageBox.Show("Le numéro du livre est requis.");
+                MessageBox.Show("Le numéro du dvd est requis.");
                 return;
             }
 
@@ -102,15 +101,12 @@ namespace MediaTekDocuments.view.CommandeLivres
             string libelle = "En cours";
             DateTime dateCommande = dateTimePickerDateCommande.Value;
 
-            CommandeDocument commandeLivre = new CommandeDocument(maxId, nbExemplaire, idSuivi, libelle, numeroLivre, dateCommande, montant);
-            controller.CreerCommandeLivre(commandeLivre);
+            CommandeDocument commandeDvd = new CommandeDocument(maxId, nbExemplaire, idSuivi, libelle, numeroDvd, dateCommande, montant);
+            controller.CreerCommandeDvd(commandeDvd);
 
-            FrmMediatek.refresh_command_livre();
+            FrmMediatek.refresh_command_dvd();
             this.Close();
             FrmMediatek.Show();
-
         }
-
-
     }
 }

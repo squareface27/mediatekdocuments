@@ -88,6 +88,12 @@
     <Compile Include="model\Commande.cs" />
     <Compile Include="model\CommandeDocument.cs" />
     <Compile Include="model\Suivi.cs" />
+    <Compile Include="view\CommandeDvd\FrmAjouterCommandeDvd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="view\CommandeDvd\FrmAjouterCommandeDvd.Designer.cs">
+      <DependentUpon>FrmAjouterCommandeDvd.cs</DependentUpon>
+    </Compile>
     <Compile Include="view\CommandeLivres\FrmAjouterCommandeLivre.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,6 +127,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="view\CommandeDvd\FrmAjouterCommandeDvd.resx">
+      <DependentUpon>FrmAjouterCommandeDvd.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="view\CommandeLivres\FrmAjouterCommandeLivre.resx">
       <DependentUpon>FrmAjouterCommandeLivre.cs</DependentUpon>
     </EmbeddedResource>
