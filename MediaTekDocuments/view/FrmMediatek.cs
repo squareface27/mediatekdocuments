@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using MediaTekDocuments.model;
 using MediaTekDocuments.controller;
 using MediaTekDocuments.view.CommandeLivres;
+using MediaTekDocuments.view.CommandeDvd;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
@@ -23,6 +24,7 @@ namespace MediaTekDocuments.view
         private readonly BindingSource bdgRayons = new BindingSource();
 
         public string NumeroLivre { get; private set; }
+        public string NumeroDvd { get; private set; }
         public string NouveauSuivi { get; private set; }
 
         /// <summary>
@@ -33,10 +35,15 @@ namespace MediaTekDocuments.view
             InitializeComponent();
             this.controller = new FrmMediatekController();
             btnAjouterCommandeLivre.Enabled = false;
-            btnAppliquerModification.Enabled = false;
+            btnAppliquerModificationLivre.Enabled = false;
             btnSupprimerCommandeLivre.Enabled = false;
             suiviList.Enabled = false;
             btnModifierCommandeLivre.Enabled = false;
+            btnAjouterCommandeDvd.Enabled = false;
+            btnModifierCommandeDvd.Enabled = false;
+            btnSupprimerCommandeDvd.Enabled = false;
+            btnAppliquerModificationDvd.Enabled = false;
+            suiviListDvd.Enabled = false;
         }
 
         /// <summary>
@@ -1291,6 +1298,15 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
+        /// Actualise la liste complète des commandes de dvd
+        /// </summary>
+        public void ActualiserCommandeDvd(Dvd dvd)
+        {
+            lesCommandesDvd = controller.GetCommandesDvd(dvd.Id);
+            RemplirCommandeDvdListe(lesCommandesDvd);
+        }
+
+        /// <summary>
         /// Remplit le datagrid des livres avec la liste reçue en paramètre
         /// </summary>
         /// <param name="commande">liste des livres</param>
@@ -1397,10 +1413,16 @@ namespace MediaTekDocuments.view
 
         #endregion
 
-        public void refresh_command()
+        public void refresh_command_livre()
         {
             Livre livre = lesLivres.Find(x => x.Id.Equals(textBoxNumeroLivre.Text));
             ActualiserCommandeLivre(livre);
+        }
+
+        public void refresh_command_dvd()
+        {
+            Dvd dvd = lesDvd.Find(x => x.Id.Equals(textBoxNumeroDvd.Text));
+            ActualiserCommandeDvd(dvd);
         }
 
         private void dgvCommandeLivreListe_SelectionChanged(object sender, EventArgs e)
@@ -1431,7 +1453,7 @@ namespace MediaTekDocuments.view
         /// <param name="libelleSuivi">liste des libelles
         /// <param name="bdg">bindingsource contenant les informations</param>
         /// <param name="cbx">combobox à remplir</param>
-        public void RemplirComboLibelleSuivi(List<Suivi> libelleSuivi, ComboBox cbx)
+        public void RemplirComboLibelleSuiviLivre(List<Suivi> libelleSuivi, ComboBox cbx)
         {
             commande = (CommandeDocument)bdgCommandeLivreListe[bdgCommandeLivreListe.Position];
 
@@ -1461,12 +1483,12 @@ namespace MediaTekDocuments.view
             commande = (CommandeDocument)bdgCommandeLivreListe[bdgCommandeLivreListe.Position];
             lblSuivi.Text = commande.LeSuivi.Libelle;
             suiviList.Enabled = true;
-            RemplirComboLibelleSuivi(controller.GetSuivis(), suiviList);
-            btnAppliquerModification.Enabled = true;
+            RemplirComboLibelleSuiviLivre(controller.GetSuivis(), suiviList);
+            btnAppliquerModificationLivre.Enabled = true;
 
         }
 
-        private void btnAppliquerModification_Click(object sender, EventArgs e)
+        private void btnAppliquerModificationLivre_Click(object sender, EventArgs e)
         {
             commande = (CommandeDocument)bdgCommandeLivreListe[bdgCommandeLivreListe.Position];
             Suivi suiviSelectionne = suiviList.SelectedItem as Suivi;
@@ -1489,14 +1511,14 @@ namespace MediaTekDocuments.view
             CommandeDocument commandeLivre = new CommandeDocument(commande.Id, commande.NombreExemplaire, CodeSuivi, LibelleSuivi, commande.IdLivreDvd, commande.DateCommande, commande.Montant);
             controller.UpdateCommandeLivre(commandeLivre);
 
-            refresh_command();
+            refresh_command_livre();
         }
 
         private void btnSupprimerCommandeLivre_Click(object sender, EventArgs e)
         {
             commande = (CommandeDocument)bdgCommandeLivreListe[bdgCommandeLivreListe.Position];
 
-            if(commande.LeSuivi.Libelle == "Livrée")
+            if (commande.LeSuivi.Libelle == "Livrée")
             {
                 MessageBox.Show("Erreur, il est impossible de supprimer une commande livrée");
             }
@@ -1505,9 +1527,247 @@ namespace MediaTekDocuments.view
                 CommandeDocument commandeLivre = new CommandeDocument(commande.Id, commande.NombreExemplaire, commande.LeSuivi.Id, commande.LeSuivi.Libelle, commande.IdLivreDvd, commande.DateCommande, commande.Montant);
                 controller.SupprimerCommandeLivre(commandeLivre);
 
-                refresh_command();
+                refresh_command_livre();
             }
-            
+
+        }
+
+        #region Commande Dvd
+        private readonly BindingSource bdgCommandeDvdListe = new BindingSource();
+        private List<CommandeDocument> lesCommandesDvd = new List<CommandeDocument>();
+        CommandeDocument commandeDvd = null;
+
+
+        private void textBoxNumeroDvd_TextChanged(object sender, EventArgs e)
+        {
+            txtBoxTitreDvd.Text = "";
+            textBoxRealisateurDvd.Text = "";
+            textBoxDureeDvd.Text = "";
+            textBoxGenreDvd.Text = "";
+            textBoxPublicDvd.Text = "";
+            textBoxRayonDvd.Text = "";
+            textBoxImagePathDvd.Text = null;
+            RemplirReceptionExemplairesListe(null);
+            AccesReceptionExemplaireGroupBox(false);
+        }
+
+        /// <summary>
+        /// Affichage des informations du dvd
+        /// </summary>
+        /// <param name="dvd">la revue</param>
+        private void AfficheCommandeDvdInfos(Dvd dvd)
+        {
+            // informations sur le dvd
+            txtBoxTitreDvd.Text = dvd.Titre;
+            textBoxRealisateurDvd.Text = dvd.Realisateur;
+            textBoxDureeDvd.Text = dvd.Duree.ToString();
+            richTextBoxSynopsis.Text = dvd.Synopsis;
+            textBoxGenreDvd.Text = dvd.Genre;
+            textBoxPublicDvd.Text = dvd.Public;
+            textBoxRayonDvd.Text = dvd.Rayon;
+            string image = dvd.Image;
+            try
+            {
+                pcbReceptionRevueImage.Image = Image.FromFile(image);
+            }
+            catch
+            {
+                pcbReceptionRevueImage.Image = null;
+            }
+            lesCommandesDvd = controller.GetCommandesDvd(dvd.Id);
+            RemplirCommandeDvdListe(lesCommandesDvd);
+        }
+
+        /// <summary>
+        /// Recherche d'un numéro de livre
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonRechercheCommandeDvd_Click(object sender, EventArgs e)
+        {
+            if (!textBoxNumeroDvd.Text.Equals(""))
+            {
+                Dvd dvd = lesDvd.Find(x => x.Id.Equals(textBoxNumeroDvd.Text));
+                if (dvd != null)
+                {
+                    AfficheCommandeDvdInfos(dvd);
+                    btnAjouterCommandeDvd.Enabled = true;
+                    NumeroDvd = textBoxNumeroDvd.Text;
+                }
+                else
+                {
+                    MessageBox.Show("numéro introuvable");
+                    btnAjouterCommandeDvd.Enabled = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Remplit le datagrid des livres avec la liste reçue en paramètre
+        /// </summary>
+        /// <param name="commandeDvd">liste des livres</param>
+        private void RemplirCommandeDvdListe(List<CommandeDocument> commandeDvd)
+        {
+            if (commandeDvd != null)
+            {
+                bdgCommandeDvdListe.DataSource = commandeDvd;
+                dgvCommandeDvdListe.DataSource = bdgCommandeDvdListe;
+                dgvCommandeDvdListe.Columns["id"].Visible = false;
+                dgvCommandeDvdListe.Columns["idLivreDvd"].Visible = false;
+                dgvCommandeDvdListe.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                dgvCommandeDvdListe.Columns["dateCommande"].DisplayIndex = 1;
+                dgvCommandeDvdListe.Columns["montant"].DisplayIndex = 2;
+                dgvCommandeDvdListe.Columns["NombreExemplaire"].DisplayIndex = 3;
+                dgvCommandeDvdListe.Columns["LeSuivi"].DisplayIndex = 4;
+
+            }
+            else
+            {
+                dgvCommandeDvdListe.DataSource = null;
+            }
+
+        }
+
+        private void btnAjouterCommandeDvd_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            var formAjouterCommandeDvd = new FrmAjouterCommandeDvd(this);
+            formAjouterCommandeDvd.Show();
+        }
+
+        private void btnModifierCommandeDvd_Click(object sender, EventArgs e)
+        {
+            commande = (CommandeDocument)bdgCommandeDvdListe[bdgCommandeDvdListe.Position];
+            suiviListDvd.Text = commande.LeSuivi.Libelle;
+            suiviListDvd.Enabled = true;
+            RemplirComboLibelleSuiviDvd(controller.GetSuivis(), suiviListDvd);
+            btnAppliquerModificationDvd.Enabled = true;
+        }
+
+        private void btnAppliquerModificationDvd_Click(object sender, EventArgs e)
+        {
+            commande = (CommandeDocument)bdgCommandeDvdListe[bdgCommandeDvdListe.Position];
+            Suivi suiviSelectionne = suiviListDvd.SelectedItem as Suivi;
+            string LibelleSuivi = suiviSelectionne.Libelle;
+            string CodeSuivi = "";
+
+            Dictionary<string, string> suiviCodes = new Dictionary<string, string>
+            {
+                {"En cours", "00001"},
+                {"Livrée", "00002"},
+                {"Réglée", "00003"},
+                {"Relancée", "00004"}
+            };
+
+            if (suiviCodes.TryGetValue(LibelleSuivi, out var code))
+            {
+                CodeSuivi = code;
+            }
+
+            CommandeDocument commandeDvd = new CommandeDocument(commande.Id, commande.NombreExemplaire, CodeSuivi, LibelleSuivi, commande.IdLivreDvd, commande.DateCommande, commande.Montant);
+            controller.UpdateCommandeDvd(commandeDvd);
+
+            refresh_command_dvd();
+        }
+
+        private void dgvCommandeDvdListe_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvCommandeDvdListe.CurrentCell != null)
+            {
+                try
+                {
+                    btnModifierCommandeDvd.Enabled = true;
+                    btnSupprimerCommandeDvd.Enabled = true;
+                }
+                catch
+                {
+                    btnModifierCommandeDvd.Enabled = false;
+                    btnSupprimerCommandeDvd.Enabled = false;
+                }
+            }
+            else
+            {
+                btnModifierCommandeDvd.Enabled = false;
+                btnSupprimerCommandeDvd.Enabled = false;
+            }
+        }
+
+        /// <summary>
+        /// Rempli le combobox du nom des suivis
+        /// </summary>
+        /// <param name="libelleSuivi">liste des libelles
+        /// <param name="bdg">bindingsource contenant les informations</param>
+        /// <param name="cbx">combobox à remplir</param>
+        public void RemplirComboLibelleSuiviDvd(List<Suivi> libelleSuivi, ComboBox cbx)
+        {
+            commande = (CommandeDocument)bdgCommandeDvdListe[bdgCommandeDvdListe.Position];
+
+            List<Suivi> libelleSuiviFiltrée = new List<Suivi>(libelleSuivi);
+
+            if (commande.LeSuivi.Libelle == "Livrée" || commande.LeSuivi.Libelle == "Réglée")
+            {
+                libelleSuiviFiltrée = libelleSuiviFiltrée.Where(s => s.Libelle != "En cours" && s.Libelle != "Relancée").ToList();
+            }
+            else if (commande.LeSuivi.Libelle != "Livrée")
+            {
+                libelleSuiviFiltrée = libelleSuiviFiltrée.Where(s => s.Libelle != "Réglée").ToList();
+            }
+
+            cbx.DataSource = libelleSuiviFiltrée;
+
+            if (cbx.Items.Count > 0 && libelleSuiviFiltrée.Any(s => s.Libelle == commande.LeSuivi.Libelle))
+            {
+                cbx.SelectedItem = libelleSuiviFiltrée.FirstOrDefault(s => s.Libelle == commande.LeSuivi.Libelle);
+            }
+
+        }
+
+        /// <summary>
+        /// Tri sur les colonnes commande dvd
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvCommandeDvdListe_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            string titreColonne = dgvCommandeDvdListe.Columns[e.ColumnIndex].HeaderText;
+            List<CommandeDocument> sortedList = lesCommandesDvd;
+            switch (titreColonne)
+            {
+                case "DateCommande":
+                    sortedList = lesCommandesDvd.OrderBy(o => o.DateCommande).ToList();
+                    break;
+                case "Montant":
+                    sortedList = lesCommandesDvd.OrderBy(o => o.Montant).ToList();
+                    break;
+                case "NombreExemplaire":
+                    sortedList = lesCommandesDvd.OrderBy(o => o.NombreExemplaire).ToList();
+                    break;
+                case "LeSuivi":
+                    sortedList = lesCommandesDvd.OrderBy(o => o.LeSuivi.Id).ToList();
+                    break;
+            }
+            RemplirCommandeDvdListe(sortedList);
+        }
+
+        private void btnSupprimerCommandeDvd_Click(object sender, EventArgs e)
+        {
+            commande = (CommandeDocument)bdgCommandeDvdListe[bdgCommandeDvdListe.Position];
+
+            if (commande.LeSuivi.Libelle == "Livrée")
+            {
+                MessageBox.Show("Erreur, il est impossible de supprimer une commande livrée");
+            }
+            else
+            {
+                CommandeDocument commandeDvd = new CommandeDocument(commande.Id, commande.NombreExemplaire, commande.LeSuivi.Id, commande.LeSuivi.Libelle, commande.IdLivreDvd, commande.DateCommande, commande.Montant);
+                controller.SupprimerCommandeDvd(commandeDvd);
+
+                refresh_command_dvd();
+            }
         }
     }
+
+
 }
+
+#endregion

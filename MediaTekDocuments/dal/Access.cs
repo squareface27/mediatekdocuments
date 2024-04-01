@@ -167,6 +167,18 @@ namespace MediaTekDocuments.dal
             return lesCommandesLivres;
         }
 
+        /// <summary>
+        /// Retourne les exemplaires d'un dvd
+        /// </summary>
+        /// <param name="idDvd">id du dvd concerné</param>
+        /// <returns>Liste d'objets Exemplaire</returns>
+        public List<CommandeDocument> GetCommandesDvd(string idDvd)
+        {
+            String jsonIdDocument = convertToJson("id", idDvd);
+            List<CommandeDocument> lesCommandesDvd = TraitementRecup<CommandeDocument>(GET, "commandedocument/" + jsonIdDocument);
+            return lesCommandesDvd;
+        }
+
         public string GetMaxCommandeId()
         {
             JObject retour = api.RecupDistant(GET, "maxcommande");
@@ -216,6 +228,27 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
+        /// ecriture d'une commande de dvd en base de données
+        /// </summary>
+        /// <param name="commandeDvd">commande livre à insérer</param>
+        /// <returns>true si l'insertion a pu se faire (retour != null)</returns>
+        public bool CreerCommandeDvd(CommandeDocument commandeDvd)
+        {
+            String jsonCommandeDvd = JsonConvert.SerializeObject(commandeDvd, new CustomDateTimeConverter());
+            try
+            {
+                // récupération soit d'une liste vide (requête ok) soit de null (erreur)
+                List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(POST, "commandedocument/" + jsonCommandeDvd);
+                return (liste != null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
         /// suppression d'une commande de livre en base de données
         /// </summary>
         /// <param name="commandeLivre">commande livre à insérer</param>
@@ -237,6 +270,27 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
+        /// suppression d'une commande de livre en base de données
+        /// </summary>
+        /// <param name="commandeDvd">commande livre à insérer</param>
+        /// <returns>true si l'insertion a pu se faire (retour != null)</returns>
+        public bool SupprimerCommandeDvd(CommandeDocument commandeDvd)
+        {
+            String jsonCommandeDvd = JsonConvert.SerializeObject(commandeDvd, new CustomDateTimeConverter());
+            try
+            {
+                // récupération soit d'une liste vide (requête ok) soit de null (erreur)
+                List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(DELETE, "commandedocument/" + jsonCommandeDvd);
+                return (liste != null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
         /// modification d'une commande de livre en base de données
         /// </summary>
         /// <param name="commandeLivre">commande livre à modifier</param>
@@ -248,6 +302,27 @@ namespace MediaTekDocuments.dal
             {
                 // récupération soit d'une liste vide (requête ok) soit de null (erreur)
                 List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(PUT, "commandedocument/" + jsonCommandeLivre);
+                return (liste != null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// modification d'une commande de dvd en base de données
+        /// </summary>
+        /// <param name="commandeDvd">commande livre à modifier</param>
+        /// <returns>true si la modification a pu se faire (retour != null)</returns>
+        public bool UpdateCommandeDvd(CommandeDocument commandeDvd)
+        {
+            String jsonCommandeDvd = JsonConvert.SerializeObject(commandeDvd, new CustomDateTimeConverter());
+            try
+            {
+                // récupération soit d'une liste vide (requête ok) soit de null (erreur)
+                List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(PUT, "commandedocument/" + jsonCommandeDvd);
                 return (liste != null);
             }
             catch (Exception ex)
