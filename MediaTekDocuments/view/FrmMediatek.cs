@@ -1419,12 +1419,18 @@ namespace MediaTekDocuments.view
 
         #endregion
 
+        /// <summary>
+        /// Actualisation des commandes de livres
+        /// </summary>
         public void refresh_command_livre()
         {
             Livre livre = lesLivres.Find(x => x.Id.Equals(textBoxNumeroLivre.Text));
             ActualiserCommandeLivre(livre);
         }
 
+        /// <summary>
+        /// Actualisation des commandes de DVD
+        /// </summary>
         public void refresh_command_dvd()
         {
             Dvd dvd = lesDvd.Find(x => x.Id.Equals(textBoxNumeroDvd.Text));

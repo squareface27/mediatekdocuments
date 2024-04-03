@@ -38,9 +38,11 @@ namespace MediaTekDocuments.dal
         private const string POST = "POST";
         /// <summary>
         /// méthode HTTP pour update
+        /// </summary>
         private const string PUT = "PUT";
         /// <summary>
         /// méthode HTTP pour delete
+        /// </summary>
         private const string DELETE = "DELETE";
         /// <summary>
         /// Méthode privée pour créer un singleton
@@ -216,6 +218,9 @@ namespace MediaTekDocuments.dal
             return lesCommandesDvd;
         }
 
+        /// <summary>
+        /// Obtention de l'ID max
+        /// </summary>
         public string GetMaxCommandeId()
         {
             JObject retour = api.RecupDistant(GET, "maxcommande");
