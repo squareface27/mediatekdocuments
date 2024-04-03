@@ -214,7 +214,7 @@ namespace MediaTekDocuments.view
             this.label69 = new System.Windows.Forms.Label();
             this.label70 = new System.Windows.Forms.Label();
             this.buttonRechercheCommandeLivre = new System.Windows.Forms.Button();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabCommandeDvd = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label61 = new System.Windows.Forms.Label();
             this.richTextBoxSynopsis = new System.Windows.Forms.RichTextBox();
@@ -280,7 +280,7 @@ namespace MediaTekDocuments.view
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCommandeLivreListe)).BeginInit();
-            this.tabPage1.SuspendLayout();
+            this.tabCommandeDvd.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -295,7 +295,7 @@ namespace MediaTekDocuments.view
             this.tabOngletsApplication.Controls.Add(this.tabRevues);
             this.tabOngletsApplication.Controls.Add(this.tabReceptionRevue);
             this.tabOngletsApplication.Controls.Add(this.tabCommandeLivres);
-            this.tabOngletsApplication.Controls.Add(this.tabPage1);
+            this.tabOngletsApplication.Controls.Add(this.tabCommandeDvd);
             this.tabOngletsApplication.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabOngletsApplication.ItemSize = new System.Drawing.Size(49, 18);
             this.tabOngletsApplication.Location = new System.Drawing.Point(0, 0);
@@ -2229,16 +2229,16 @@ namespace MediaTekDocuments.view
             this.buttonRechercheCommandeLivre.UseVisualStyleBackColor = true;
             this.buttonRechercheCommandeLivre.Click += new System.EventHandler(this.buttonRechercheCommandeLivre_Click);
             // 
-            // tabPage1
+            // tabCommandeDvd
             // 
-            this.tabPage1.Controls.Add(this.groupBox3);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(875, 633);
-            this.tabPage1.TabIndex = 6;
-            this.tabPage1.Text = "Commande de Dvd";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabCommandeDvd.Controls.Add(this.groupBox3);
+            this.tabCommandeDvd.Location = new System.Drawing.Point(4, 22);
+            this.tabCommandeDvd.Name = "tabCommandeDvd";
+            this.tabCommandeDvd.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCommandeDvd.Size = new System.Drawing.Size(875, 633);
+            this.tabCommandeDvd.TabIndex = 6;
+            this.tabCommandeDvd.Text = "Commande de Dvd";
+            this.tabCommandeDvd.UseVisualStyleBackColor = true;
             // 
             // groupBox3
             // 
@@ -2647,7 +2647,7 @@ namespace MediaTekDocuments.view
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCommandeLivreListe)).EndInit();
-            this.tabPage1.ResumeLayout(false);
+            this.tabCommandeDvd.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
@@ -2846,7 +2846,7 @@ namespace MediaTekDocuments.view
         private System.Windows.Forms.ComboBox suiviList;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Button btnSupprimerCommandeLivre;
-        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabCommandeDvd;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button btnSupprimerCommandeDvd;

@@ -30,10 +30,16 @@ namespace MediaTekDocuments.view
         /// <summary>
         /// Constructeur : création du contrôleur lié à ce formulaire
         /// </summary>
-        internal FrmMediatek()
+        internal FrmMediatek(Utilisateur utilisateur)
         {
             InitializeComponent();
             this.controller = new FrmMediatekController();
+            if(utilisateur.Service == "pret")
+            {
+                tabOngletsApplication.TabPages.Remove(tabCommandeLivres);
+                tabOngletsApplication.TabPages.Remove(tabCommandeDvd);
+                tabOngletsApplication.TabPages.Remove(tabReceptionRevue);
+            }
             btnAjouterCommandeLivre.Enabled = false;
             btnAppliquerModificationLivre.Enabled = false;
             btnSupprimerCommandeLivre.Enabled = false;

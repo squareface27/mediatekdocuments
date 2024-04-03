@@ -59,6 +59,15 @@ namespace MediaTekDocuments.controller
         }
 
         /// <summary>
+        /// getter sur la liste des utilisateurs
+        /// </summary>
+        /// <returns>Liste d'objets Utilisateur</returns>
+        public Utilisateur GetUtilisateur(string username, string password)
+        {
+            return access.GetUtilisateur(username, password);
+        }
+
+        /// <summary>
         /// getter sur les rayons
         /// </summary>
         /// <returns>Liste d'objets Rayon</returns>
