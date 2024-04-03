@@ -133,6 +133,26 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
+        /// Retourne touts les utilisateurs à partir de la BDD
+        /// </summary>
+        /// <returns>Liste d'objets Utilisateur</returns>
+        public Utilisateur GetUtilisateur(string username, string password)
+        {
+            var login = new { username = username, password = password };
+            String jsonIdDocument = JsonConvert.SerializeObject(login);
+            List<Utilisateur> lesUtilisateurs = TraitementRecup<Utilisateur>(GET, "utilisateur/" + jsonIdDocument);
+
+            if (lesUtilisateurs != null && lesUtilisateurs.Count > 0)
+            {
+                Console.WriteLine("Connexion réussie");
+                return lesUtilisateurs[0];
+            }
+
+            Console.WriteLine("ERREUR : Connexion impossible");
+            return null;
+        }
+
+        /// <summary>
         /// Retourne toutes les revues à partir de la BDD
         /// </summary>
         /// <returns>Liste d'objets Revue</returns>

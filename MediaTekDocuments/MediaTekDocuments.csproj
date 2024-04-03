@@ -88,6 +88,7 @@
     <Compile Include="model\Commande.cs" />
     <Compile Include="model\CommandeDocument.cs" />
     <Compile Include="model\Suivi.cs" />
+    <Compile Include="model\Utilisateur.cs" />
     <Compile Include="view\CommandeDvd\FrmAjouterCommandeDvd.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +100,12 @@
     </Compile>
     <Compile Include="view\CommandeLivres\FrmAjouterCommandeLivre.Designer.cs">
       <DependentUpon>FrmAjouterCommandeLivre.cs</DependentUpon>
+    </Compile>
+    <Compile Include="view\FrmLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="view\FrmLogin.Designer.cs">
+      <DependentUpon>FrmLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="view\FrmMediatek.cs">
       <SubType>Form</SubType>
@@ -133,6 +140,9 @@
     <EmbeddedResource Include="view\CommandeLivres\FrmAjouterCommandeLivre.resx">
       <DependentUpon>FrmAjouterCommandeLivre.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="view\FrmLogin.resx">
+      <DependentUpon>FrmLogin.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="view\FrmMediatek.resx">
       <DependentUpon>FrmMediatek.cs</DependentUpon>
     </EmbeddedResource>
@@ -150,6 +160,5 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
